@@ -20,11 +20,12 @@
       v-spacer
       v-btn(
         color="white"
-        href="https://canariasjs.com/"
+        href="https://github.com/vuetifyjs/vuetify/releases/tag/v1.0.0-beta.4"
         target="_blank"
       ).hidden-xs-only.mr-3.primary--text
-        v-icon(left) video_label
-        span CanariasJS Stream - 1/13
+        v-icon(left) mdi-bullhorn
+        span v1.0 beta.4 released!
+        v-icon(right) mdi-star
     v-toolbar(
       :color="$store.state.currentColor"
       fixed
