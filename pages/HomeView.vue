@@ -58,21 +58,15 @@
     section#new-release.text-xs-center
       v-card(tile flat color="primary" dark)
         v-card-text
-          span.subheading v1.0 <strong>beta</strong> has been released!
+          span.subheading New Vuetify Store is now live!
           v-btn(
             color="white"
             class="primary--text"
             light
-            href="https://github.com/vuetifyjs/vuetify/releases/tag/v1.0.0-beta.1"
+            href="https://next.vuetifyjs.com/en/store"
             target="_blank"
-          ).ml-4 Learn more
-          v-btn(
-            color="white"
-            class="primary--text"
-            light
-            href="https://next.vuetifyjs.com"
-            target="_blank"
-          ) 1.0 docs
+            large
+          ).ml-4 Take me there!
 
     div#section-body
       section#features.mb-3
