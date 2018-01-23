@@ -276,7 +276,7 @@
             href: '/pre-made-themes'
           },
           {
-            href: 'https://vuetify.threadless.com',
+            href: 'https://next.vuetifyjs.com/store',
             title: 'Shop',
             target: '_blank',
             action: 'shopping_cart'
