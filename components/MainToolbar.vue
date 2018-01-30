@@ -15,8 +15,8 @@
           style="position: relative"
           v-bind:key="$store.state.h1"
           class="d-flex"
+          v-html="$store.state.h1"
         )
-          div(v-html="$store.state.h1").ellipsis
       v-spacer
       v-toolbar-items
         v-btn(
@@ -24,8 +24,8 @@
           href="https://next.vuetifyjs.com/store"
           target="_blank"
           style="min-width: 0"
-        )
-          span.hidden-sm-and-down Shop
+        ).hidden-xs-only
+          span Shop
           v-icon(
             :right="$vuetify.breakpoint.mdAndUp"
           ) store
