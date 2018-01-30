@@ -12,20 +12,23 @@
         v-icon search
       transition(name="slide" mode="out-in")
         v-toolbar-title(
-          v-html="$store.state.h1"
           style="position: relative"
           v-bind:key="$store.state.h1"
           class="d-flex"
         )
+          div(v-html="$store.state.h1").ellipsis
       v-spacer
-      v-btn(
-        color="white"
-        href="https://github.com/vuetifyjs/vuetify/releases/tag/v1.0.0-beta.4"
-        target="_blank"
-      ).hidden-xs-only.mr-3.primary--text
-        v-icon(left) mdi-bullhorn
-        span v1.0 beta.4 released!
-        v-icon(right) mdi-star
+      v-toolbar-items
+        v-btn(
+          flat
+          href="https://next.vuetifyjs.com/store"
+          target="_blank"
+          style="min-width: 0"
+        )
+          span.hidden-sm-and-down Shop
+          v-icon(
+            :right="$vuetify.breakpoint.mdAndUp"
+          ) store
     v-toolbar(
       :color="$store.state.currentColor"
       fixed

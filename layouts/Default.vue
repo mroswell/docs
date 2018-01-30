@@ -6,6 +6,18 @@
       v-container(fluid)
         transition(name="slide" mode="out-in")
           router-view
+      v-snackbar(:value="snack" :timeout="0")
+        span V1.0 IS COMING SOON!
+        v-spacer
+        v-btn(
+          flat
+          color="yellow darken-1"
+          href="https://next.vuetifyjs.com"
+          target="_blank"
+          @click="snack = false"
+        ) Check it out
+        v-btn(icon dark @click="snack = false").ml-0
+          v-icon close
     main-footer
     v-fab-transition
       v-btn(
@@ -35,7 +47,8 @@
     },
 
     data: () => ({
-      fab: false
+      fab: false,
+      snack: true
     }),
 
     mounted () {

@@ -58,7 +58,7 @@
     section#new-release.text-xs-center
       v-card(tile flat color="primary" dark)
         v-card-text
-          span.subheading New Vuetify Store is now live!
+          span.subheading New Vuetify Shop is now live!
           v-btn(
             color="white"
             class="primary--text"

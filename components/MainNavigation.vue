@@ -72,7 +72,7 @@
         to="/vuetify/sponsors-and-backers"
         round
         small
-        outline          
+        outline
         color="blue lighten-2"
       )
         span.caption Become a backer
