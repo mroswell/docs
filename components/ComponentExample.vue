@@ -1,6 +1,6 @@
 <template lang="pug">
   div.component-example(:id="id")
-    codepen(ref="codepen" :pen="pen")
+    codepen(ref="codepen" :pen="parsed")
     v-card
       v-toolbar(v-bind:color="currentColor" flat dense dark)
         v-btn(dark icon :to="{ hash: id }")
@@ -13,7 +13,7 @@
             dark
             icon
             tag="a"
-            v-bind:href="'https://github.com/vuetifyjs/docs/tree/master/examples/'+file+'.vue'"
+            :href="`https://github.com/vuetifyjs/docs/tree/master/examples/${file}.vue`"
             target="_blank"
             slot="activator"
           )
@@ -23,7 +23,7 @@
           v-btn(
             dark
             icon
-            v-on:click="sendToCodepen"
+            @click="sendToCodepen"
             slot="activator"
           )
             v-icon fa-codepen
@@ -32,20 +32,20 @@
           v-btn(
             dark
             icon
-            v-on:click.stop="panel = !panel"
+            @click.stop="panel = !panel"
             slot="activator"
           )
             v-icon code
           span View source
       v-expansion-panel.elevation-0.component-example__panel
-        v-expansion-panel-content(v-model="panel")
+        v-expansion-panel-content(v-model="panel" lazy)
           v-tabs(ref="tabs" :scrollable="false")
-            v-tabs-bar(dark v-bind:class="[currentColor]" class="darken-4 pl-0")
-              v-tabs-slider(v-bind:color="currentColor + ' lighten-4'")
+            v-tabs-bar(dark :class="[currentColor]" class="darken-4 pl-0")
+              v-tabs-slider(:color="currentColor + ' lighten-4'")
               v-tabs-item(
                 v-for="tab in tabs"
-                v-bind:key="tab"
-                v-bind:href="'#'+tab"
+                :key="tab"
+                :href="'#'+tab"
                 v-show="parsed[tab]"
               ) {{ tab }}
             v-tabs-items
@@ -55,40 +55,29 @@
                 v-bind:id="tab"
               )
                 markup(:lang="getLang(tab)" v-if="parsed[tab]").ma-0
-                  div(v-html="parsed[tab]")
+                  | {{ parsed[tab] }}
       v-card-text.subheading.justify
         slot(name="desc")
       v-card-text
-        div(v-bind:id="'example-'+uid")
+        component(:is="component")
     v-divider.my-5
 </template>
 
 <script>
-  import Vue from 'vue'
   const release = process.env.RELEASE
-  const path = require('path')
-  const resolve = (file) => path.resolve(__dirname, file)
 
   export default {
     data () {
       return {
-        isBooted: false,
         tabs: ['template', 'script', 'style'],
         component: null,
-        instance: null,
-        uid: null,
         panel: false,
         parsed: {
           script: null,
           style: null,
           template: null
         },
-        pen: {
-          script: null,
-          style: null,
-          template: null
-        },
-        url: release ? 'releases/' + release + '/' : ''
+        url: release ? `releases/${release}/` : ''
       }
     },
 
@@ -105,38 +94,27 @@
       }
     },
 
-    watch: {
-      panel () {
-        this.getMarkup().then(() => this.$refs.tabs.slider())
-      }
-    },
-
     beforeDestroy () {
       this.instance.$destroy()
     },
 
     mounted () {
-      this.uid = this._uid
-      const vm = this
       import(
         /* webpackChunkName: "examples" */
         /* webpackMode: "lazy-once" */
         `../examples/${this.file}.vue`
       ).then(comp => {
-        this.instance = new Vue(comp.default)
-        this.instance.$mount('#example-'+vm.uid)
+        this.component = comp.default
       })
+
+      import(
+        /* webpackChunkName: "examples-source" */
+        /* webpackMode: "lazy-once" */
+        `!raw-loader!../examples/${this.file}.vue`
+      ).then(this.boot)
     },
 
     methods: {
-      getMarkup () {
-        if (!this.isBooted) {
-          this.isBooted = true
-          return this.request(this.file, this.boot)
-        }
-
-        return Promise.resolve()
-      },
       getLang (tab) {
         if (tab === 'script') return 'js'
         if (tab === 'style') return 'css'
@@ -145,14 +123,9 @@
       parseTemplate (target, template) {
         const string = `(<${target}(.*)?>[\\w\\W]*<\\/${target}>)`
         const regex = new RegExp(string, 'g')
-        const parsed = regex.exec(template)
+        const parsed = regex.exec(template) || []
 
-        return parsed
-          ? parsed[1]
-          : ''
-      },
-      replaceCharacters (str) {
-        return str.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        return parsed[1] || ''
       },
       boot (res) {
         const template = this.parseTemplate('template', res)
@@ -160,12 +133,6 @@
         const style = this.parseTemplate('style', res)
 
         this.parsed = {
-          template: this.replaceCharacters(template),
-          script: this.replaceCharacters(script),
-          style: this.replaceCharacters(style)
-        }
-
-        this.pen = {
           template,
           script,
           style
@@ -174,17 +141,8 @@
       toggle () {
         this.active = !this.active
       },
-      request (file, cb) {
-        this.loading = true
-        return this.$http.get(`/${this.url}example-source/${file}.vue`).then(({ data }) => {
-          cb(data)
-          this.loading = false
-
-          return Promise.resolve()
-        })
-      },
       sendToCodepen () {
-        this.getMarkup().then(() => this.$refs.codepen.submit())
+        this.$refs.codepen.submit()
       }
     }
   }
